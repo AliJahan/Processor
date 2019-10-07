@@ -32,8 +32,8 @@ module EXE (
 	// To WB for pipeline 		//TODO Is this one necessary? 
 	input [31:0] pc_in,			// PC in
 	output [31:0] pc_out,		// PC out
-	input needs_wb  			// Shows if the instruction needs write-back in
-	output needs_wb_out			// Shows if the instruction needs write-back out
+	input needs_wb,  			// Shows if the instruction needs write-back in
+	output needs_wb_out,		// Shows if the instruction needs write-back out
 	output is_store_out			// Shows if the instruction is store (used in memory LD/SW)
 );
 
