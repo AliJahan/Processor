@@ -2,7 +2,7 @@
 // Author: Ali Jahan
 // Description: 
 //////////////////////////////////////////////////////////////////////////////////
-`include "MEM.v"
+`include "Memory.v"
 
 module FETCH (
 	input clk,    				// Clock
@@ -21,7 +21,14 @@ always @(posedge clk) begin
 	end
 end
 
-MEM icache(.clk(clk), .raddr(pc), .rdata(instruction), .waddr(32'b0), .wdata(32'b0), .wen(1'b0));
+Memory #(.INIT_MEM_FILE("instructioncache.init")) icache(
+	.clk(clk), 
+	.raddr(pc), 
+	.rdata(instruction), 
+	.waddr(32'b0), 
+	.wdata(32'b0), 
+	.wen(1'b0)
+	);
 
 assign curr_pc = pc;
 

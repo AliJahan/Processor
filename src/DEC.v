@@ -26,7 +26,9 @@ module DEC(
 	output [3:0] rs2,			// RS2 portion of instrution
 	output [3:0] rd,			// RD portion of instrution
 	output [31:0] se_imm,		// Sign extended immediate
-	output is_load_store,		// Shows if the instruction is load/store
+	output is_load,				// Shows if the instruction is load
+	output is_store,			// Shows if the instruction is store
+	output needs_wb,			// Shows if the instruction needs to write-back any data to RF
 	output is_computational,	// Shows if the instruction uses COMP_ALU or COND_ALU
 
 	// To EXE for pipeline
@@ -39,15 +41,17 @@ wire [3:0] opcode;								// Opcode
 wire [3:0] rd, rs1, rs2;						// Regs
 wire [15:0] imm;								// Immediate
 
-assign opcode 	= instruction[31:28];			//
-assign rd		= instruction[27:24];			//
-assign rs1		= instruction[23:20];			//
-assign rs2		= instruction[19:16];			//
-assign imm		= instruction[15:0];			// Immediate
-assign se_imm 	= { {16{im[15]}}, im[15:0] };	// Sign extended immediate
-assign instr_type = opcode[3:2];				// Instruction type
-assign is_computational = opcode[1];			// 
-assign is_load_store = opcode[0];				//
+assign opcode 			= instruction[31:28];			//
+assign rd				= instruction[27:24];			//
+assign rs1				= instruction[23:20];			//
+assign rs2				= instruction[19:16];			//
+assign imm				= instruction[15:0];			// Immediate
+assign se_imm 			= { {16{im[15]}}, im[15:0] };	// Sign extended immediate
+assign instr_type 		= opcode[3:2];					// Instruction type
+assign is_computational = opcode[1];					// 
+assign is_load 			= opcode[3]  & opcode[0];		//
+assign is_store			= !opcode[3]  & opcode[0];
+assign needs_wb			= ~opcode[2];
 
 RF register_file(
 	.clk(clk), 

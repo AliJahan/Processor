@@ -1,23 +1,31 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Author: Ali Jahan
-// Description: 
+// Description: Memory stage 
 //////////////////////////////////////////////////////////////////////////////////
-module MEM(
-	input clk,
-	input [31:0] raddr,
-	output reg [31:0] rdata,
-	input [31:0] waddr,
-	input [31:0] wdata
-	input wen,
+`include "Memory.v"
+
+module MEM (
+	input clk,    			// Clock
+	input [31:0] addr,		// Address to/from which the data is written/read  (LW/SW)
+	input [31:0] wdata,		// The data to be written, EXE output (SW)
+	input needs_wb,			// If the instruction needs WB
+	input is_store,			// 
+	output [31:0] rdata,	// The data which are read from data cache
+	output [31:0] pdata,	// The data from EXE output
+	output wb_wen			// If the data are gonna be written in RF
 );
 
-parameter MEM_SIZE = 1<<32;
+Memory #(.INIT_MEM_FILE("datacache.init")) dcache(
+	.clk(clk),
+	.raddr(addr),
+	.rdata(rdata),
+	.waddr(addr),
+	.wdata(wdata),
+	.wen(is_store)
+	);
 
-reg [MEM_SIZE-1:0] mem [31:0];
-always @(posedge clk) begin 
-	if(wen) begin
-		mem[waddr] <= wdata;
-	rdata <= mem[raddr];
-end
+//Pipeline signal passing
+assign wb_wen = needs_wb;	//
+assign pdata = wdata;		// Bypass data to WB stage if it is not load
 
-endmodule 
+endmodule

@@ -19,7 +19,8 @@ module EXE (
 								// | 10 (I-type)  | RS2	         | RS1_VAL         | IMM             |
 								// -------------------------------------------------------------------
 	input is_computational,		// Shows if the instruction uses COMP_ALU or COND_ALU
-	input is_load_store,		// Shows if the instruction is load/store
+	input is_load,				// Shows if the instruction is load
+	input is_store,				// Shows if the instruction is store
 	input [3:0] rs2,			// RS2 portion of instrution
 	input [3:0] rd,				// RD portion of instrution
 	input [31:0] imm,			// Sign extended Immediate
@@ -28,24 +29,30 @@ module EXE (
 	output z_flag,				// If the checked condition is true
 	output [31:0] exe_out,		// Output of EXE stage, can be branch target or result of calculations
 
-	// To WB for pipeline //TODO Is this one necessary? 
+	// To WB for pipeline 		//TODO Is this one necessary? 
 	input [31:0] pc_in,			// PC in
 	output [31:0] pc_out,		// PC out
-	output is_load_store_out	// Shows if the instruction is load/store (used in memory LD/SW)
+	input needs_wb  			// Shows if the instruction needs write-back in
+	output needs_wb_out			// Shows if the instruction needs write-back out
+	output is_store_out			// Shows if the instruction is store (used in memory LD/SW)
 );
 
 reg [31:0] alu_op1;
 reg [31:0] alu_op2;
 reg [3:0] alu_opcode;
+
 wire [31:0] alu_out;
+wire select_imm;
 
+// The first operand of ALU is fixed
+assign alu_op1 = rs1_val;							
 
-assin alu_op1 = rs1_val;
-
+// For load/store & I-type & JAL instructions, imm is the sconed operand of the ALU
+assign select_imm = instr_type[1] | is_load | is_store; 	
 
 //MUX for selecting ALUs' Operands
-always @(instr_type[1] or imm or rs2 or rd or rs1_val or rs2_val) begin
-	case((instr_type[1] | is_load_store))
+always @(select_imm or imm or rs2 or rd or rs1_val or rs2_val) begin
+	case(select_imm)
 		1'b0: alu_op2    <= rs2_val;
 		1'b1: alu_op2    <= imm;
 	endcase
@@ -69,7 +76,7 @@ always @(instr_type or imm or rs2 or rd or rs1_val or rs2_val) begin
 	endcase
 end
 
-
+//Computational operations ALU
 COMP_ALU comp_alu(
 	.opa(alu_op1), 	// First operand
 	.opb(alu_op2), 	// Second operand
@@ -77,7 +84,7 @@ COMP_ALU comp_alu(
 	.res(alu_out)	// Result
 	);
 
-
+//Conditional operations ALU
 COND_ALU cond_alu(
 	.opa(alu_op1), 	// First operand
 	.opb(alu_op2), 	// Second operand
@@ -90,6 +97,8 @@ assign exe_out = is_computational ? alu_out : (pc+imm);
 
 
 //Pipeline signal passing
-assign is_load_store_out = is_load_store;
+assign is_store_out = is_store;
+assign is_load_out  = is_load;
+assign needs_wb_out = needs_wb;
 
 endmodule
