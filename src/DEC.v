@@ -37,9 +37,9 @@ module DEC(
 	);
 
 
-wire [3:0] opcode;								// Opcode
-wire [3:0] rd, rs1, rs2;						// Regs
-wire [15:0] imm;								// Immediate
+wire [3:0] opcode;			// Opcode
+wire [3:0] rd, rs1, rs2;	// Regs
+wire [15:0] imm;			// Immediate
 
 assign opcode 			= instruction[31:28];			//
 assign rd				= instruction[27:24];			//
@@ -50,8 +50,8 @@ assign se_imm 			= { {16{im[15]}}, im[15:0] };	// Sign extended immediate
 assign instr_type 		= opcode[3:2];					// Instruction type
 assign is_computational = opcode[1];					// 
 assign is_load 			= opcode[3]  & opcode[0];		//
-assign is_store			= !opcode[3]  & opcode[0];
-assign needs_wb			= ~opcode[2];
+assign is_store			= !opcode[3]  & opcode[0];		// 
+assign needs_wb			= ~opcode[2];					// If the instruction has to be written-back to RF
 
 RF register_file(
 	.clk(clk), 

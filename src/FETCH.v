@@ -6,7 +6,6 @@
 
 module FETCH (
 	input clk,    				// Clock
-	input nrst,					// Active-low reset
 	input [31:0] next_pc,  		// Next value of the PC reg
 	output [31:0] curr_pc,		// Current PC
 	output [31:0] instruction	// Fetched instruction
@@ -14,11 +13,7 @@ module FETCH (
 
 reg [31:0] pc;
 always @(posedge clk) begin 
-	if(~nrst) begin
-		 pc <= 0;
-	end else begin
-		 pc <= next_pc;
-	end
+	pc <= next_pc;
 end
 
 Memory #(.INIT_MEM_FILE("instructioncache.init")) icache(

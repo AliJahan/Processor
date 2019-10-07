@@ -34,7 +34,9 @@ module EXE (
 	output [31:0] pc_out,		// PC out
 	input needs_wb,  			// Shows if the instruction needs write-back in
 	output needs_wb_out,		// Shows if the instruction needs write-back out
-	output is_store_out			// Shows if the instruction is store (used in memory LD/SW)
+	output is_store_out,		// Shows if the instruction is store (used in memory LD/SW)
+	output [31:0] store_data	// To be written in Memory in SW instructions
+	output [3:0] wb_addr		// To be written in RF in WB
 );
 
 reg [31:0] alu_op1;
@@ -100,5 +102,6 @@ assign exe_out = is_computational ? alu_out : (pc+imm);
 assign is_store_out = is_store;
 assign is_load_out  = is_load;
 assign needs_wb_out = needs_wb;
-
+assign store_data 	= rs2_val;
+assign	wb_addr		= rd;
 endmodule
