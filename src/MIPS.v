@@ -8,7 +8,7 @@
 `include "MEM.v"
 `include "WB.v"
 
-module MPIS(
+module MIPS(
 	wire clk,
 	wire [31:0] pc
 	);
