@@ -1,0 +1,5 @@
+LW r1 0(r0)
+LW r2 0(r0)
+ADD r4 r1 r2
+SUB r5 r1 r2
+SW r5 4(r0)
