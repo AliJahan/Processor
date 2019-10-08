@@ -10,9 +10,9 @@ Located in *src/*, which is implemented in *Verilog* and is explained in [*Proce
 located in *Assembler/*, which is an assembler developed in *python3* to convert assembly to machine code. 
 In order to use the assembler, run following command in the project's root:
 
-```python3 Assembler/main.py path_to_assemly_code_file```
+```python3 Assembler/main.py path_to_assembly_code_file```
 
-The results will be written in the directory of *path_to_assemly_code_file* with the same name as the input file with *.asm* extension added to the file name.
+The results will be written in the directory of *path_to_assembly_code_file* with the same name as the input file with *.asm* extension added to the file name.
 
 ### Examples
 located in *examples/*, which is a testbench that runs a code on the implemented processor using *iverilog* tool. Following testbench is in the *examples* directory for now:
