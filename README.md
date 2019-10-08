@@ -4,18 +4,21 @@ Processor Implementation in Verilog for [this](https://github.com/AliJahan/Proce
 ## Project structure
  The project constists of four components:
 ### Processor implementation: 
-located in */src*, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#processor-architecture) saection.
+located in *src/*, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#processor-architecture) saection.
 
 ### Assembler
 located in *Assembler/*, which is an assembler developed in *python3* to convert assembly to machine code. 
 In order to use the assembler, run following command in the project's root:
+
 ```python3 /Assembler/main.py path_to_assemly_code_file```
+
 the results will be written in the directory of *path_to_assemly_code_file* with the same name as the input file with *.asm* extension added to the file name.
 
 ### Examples
 located in *examples/*, which is a testbench that runs a code on the implemented processor using *iverilog* tool. Following testbench is in the *examples* directory for now:
  * *fibonacci_tb.v*: first, loads the provided machine code file (*examples/fibonacci_code.init*) into *instruction cache* of the processor. Then, loads the data file (*/examples/fibonacci_data*) into *data cache*. And finallly, excutes the code on the processor. *examples/fibonacci_code* is the assemlby code of a programm that calculates N*th* first elements of Fibonacci series and save it to the *data cache*. At the end of each execution, the *data cache* is dumped to the *examples/fibonacci_dcache*. (Important note: since the pipelined processor stil does not support data forwarding, dummy instructions are placed between depeneant instructions ```ADD r10 r10 r10```)
  
+
 In order to execute another program on the processor, change the following paramteres in *fibonacci_tb.v*:
   * *ICACHE_INIT_FILE*: The address of the machine code to be loaded in *instruction cache*
   * *DCACHE_INIT_FILE*: The address of the data needed by your programm to be executed. If your program does not need data to be in the memory, provide an empty file.
