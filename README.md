@@ -1,13 +1,13 @@
 # Processor
 Processor Implementation in Verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA. 
 
-## 1. Processor Architecture
+## 1 Processor Architecture
 Here goes the detailed architecture of the implemented processor.
 
-## 2. Project structure
+## 2 Project structure
  The project constists of four components:
 ### Processor implementation: 
-Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#processor-architecture) saection.
+Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) saection.
 
 ### Assembler
 located in ```Assembler/```, which is an assembler developed in *python3* to convert assembly to machine code. 
