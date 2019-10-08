@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module RF(
 	input clk,				// Clock
-	input nrst,
+	input nrst,				// Active-low reset
 	input [3:0] raddra, 	// Read address port #1
 	input [3:0] raddrb, 	// Read address port #2
 	input [3:0] waddr, 		// Write address port 
