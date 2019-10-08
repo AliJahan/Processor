@@ -12,7 +12,7 @@ reg nrst;
 Processor #(
 			 .DCACHE_INIT_FILE("../examples/fibonacci_data"), 
 			 .ICACHE_INIT_FILE("../examples/fibonacci_code.init"),
-			 .DCACHE_DUMP_FILE("../simulation/fibonacci_dcache")
+			 .DCACHE_DUMP_FILE("../examples/fibonacci_dcache")
 		   )
 		   processor(
 					 .clk(clk), 
@@ -26,7 +26,7 @@ begin
 	nrst <= 1'b0;
 	# 20;
 	nrst <= 1'b1;
-	repeat(500) @(posedge clk);
+	repeat(100000) @(posedge clk);
 	$finish;
 end
 

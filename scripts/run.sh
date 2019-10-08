@@ -10,6 +10,9 @@ python3 main.py ../examples/fibonacci_code
 
 cd ../examples
 
+# Compile verilog file
+iverilog -I../src/ fibonacci_tb.v
+
 # Run simulation
 if [ "$VERBOSE" == "-v" ]; then
     echo "Running in verbose mode"
