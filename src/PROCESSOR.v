@@ -86,17 +86,17 @@ module Processor(
 	reg [3:0] EXE_rd;
 	reg [31:0] EXE_imm;
 	reg [31:0] EXE_pc_in;
-	wire EXE_z_flag;						//Not Used
+	wire EXE_z_flag;						
 	reg EXE_needs_wb;
 	reg EXE_is_branch_in;
 	wire [31:0] EXE_exe_out;
-	wire [31:0] EXE_pc_out;					//Not Used
+	wire [31:0] EXE_pc_out;					
 	wire EXE_needs_wb_out;
 	wire EXE_is_store_out;
 	wire [31:0] EXE_store_data;
 	wire [3:0] EXE_wb_addr;
 	wire EXE_is_load_out;
-	wire EXE_is_branch;						//Not Used
+	wire EXE_is_branch;						
 
 	EXE exe_u(
 		.rs1_val(EXE_rs1_val),
