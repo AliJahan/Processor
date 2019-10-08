@@ -18,15 +18,21 @@ module MEM (
 	output is_load_out			// 
 
 );
+parameter DCACHE_INIT_FILE = "";
+parameter DCACHE_DUMP_FILE = "";
 
-Memory #(.INIT_MEM_FILE("../Assembler/datacache.init")) dcache(
-	.clk(clk),
-	.raddr(addr),
-	.rdata(rdata),
-	.waddr(addr),
-	.wdata(wdata),
-	.wen(is_store)
-	);
+Memory #(
+			.MEM_INIT_FILE(DCACHE_INIT_FILE),
+			.MEM_DUMP_FILE(DCACHE_DUMP_FILE)
+		) 
+		dcache(
+			.clk(clk),
+			.raddr(addr),
+			.rdata(rdata),
+			.waddr(addr),
+			.wdata(wdata),
+			.wen(is_store)
+		);
 
 //Pipeline signal passing
 assign wb_wen 		= needs_wb;	

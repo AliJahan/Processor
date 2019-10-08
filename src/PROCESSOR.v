@@ -7,12 +7,15 @@
 `include "EXE.v"
 `include "MEM.v"
 `include "WB.v"
+`include "PCGen.v"
 
 module Processor(
-	input clk,
-	input nrst
+		input clk,
+		input nrst
 	);
-
+	parameter DCACHE_INIT_FILE = "";
+	parameter ICACHE_INIT_FILE = "";
+	parameter DCACHE_DUMP_FILE = "";
 	//////////////////////////////////////////////////////////////////////////
 	// Stages 
 	//////////////////////////////////////////////////////////////////////////
@@ -21,15 +24,16 @@ module Processor(
 	wire [31:0] FETCH_curr_pc;
 	wire [31:0] FETCH_instruction;
 	reg FETCH_is_branch;
-	FETCH fetch_u(
-		.clk(clk),
-		.nrst(nrst),
-		.branch_target(FETCH_branch_target),
-		// .next_pc(FETCH_next_pc),
-		.is_branch(FETCH_is_branch),
-		.curr_pc(FETCH_curr_pc),
-		.instruction(FETCH_instruction)
-	);
+
+	FETCH #(.ICACHE_INIT_FILE(ICACHE_INIT_FILE))  // Load ichache
+		  fetch_u(
+			.clk(clk),
+			.nrst(nrst),
+			.branch_target(FETCH_branch_target),
+			.is_branch(FETCH_is_branch),
+			.curr_pc(FETCH_curr_pc),
+			.instruction(FETCH_instruction)
+		  );
 
 	/////////////// Decode Stage ///////////////
 	reg [31:0] DEC_instruction;
@@ -117,22 +121,6 @@ module Processor(
 		.wb_addr(EXE_wb_addr),
 		.is_load_out(EXE_is_load_out)
 		);
-	wire is_branch;
-	reg MEM_flush;
-	reg EXE_flush;
-	reg DEC_flush;
-	always @(posedge clk) begin 
-			// is_branch <= is_branch;
-			EXE_flush <= is_branch;
-			DEC_flush <= is_branch;
-			MEM_flush <= is_branch;
-	end
-	assign 	is_branch = EXE_z_flag & EXE_is_branch;
-	// assign	EXE_flush = is_branch;
-	// assign	MEM_flush = is_branch;
-	// assign	DEC_flush = is_branch;
-	// 	end
-	// end
 	/////////////// Memory Stage ///////////////
 	reg [31:0] MEM_addr;
 	reg [31:0] MEM_wdata;
@@ -146,19 +134,23 @@ module Processor(
 	wire MEM_wb_wen;
 	wire [3:0] MEM_wb_addr_out;
 
-	MEM mem_u(
-		.clk(clk),
-		.addr(MEM_addr),
-		.wdata(MEM_wdata),
-		.needs_wb(MEM_needs_wb),
-		.is_store(MEM_is_store),
-		.rdata(MEM_rdata),
-		.pdata(MEM_pdata),
-		.wb_wen(MEM_wb_wen),
-		.wb_addr_in(MEM_wb_addr_in),
-		.wb_addr_out(MEM_wb_addr_out),
-		.is_load_in(MEM_is_load_in),
-		.is_load_out(MEM_is_load_out)
+	MEM #(
+			.DCACHE_INIT_FILE(DCACHE_INIT_FILE),
+			.DCACHE_DUMP_FILE(DCACHE_DUMP_FILE)
+		 )	// Load dcache data
+		mem_u(
+		  .clk(clk),
+		  .addr(MEM_addr),
+		  .wdata(MEM_wdata),
+		  .needs_wb(MEM_needs_wb),
+		  .is_store(MEM_is_store),
+		  .rdata(MEM_rdata),
+		  .pdata(MEM_pdata),
+		  .wb_wen(MEM_wb_wen),
+		  .wb_addr_in(MEM_wb_addr_in),
+		  .wb_addr_out(MEM_wb_addr_out),
+		  .is_load_in(MEM_is_load_in),
+		  .is_load_out(MEM_is_load_out)
 		);
 
 	/////////////// Write-back Stage ///////////////
@@ -183,6 +175,25 @@ module Processor(
 		);
 
 	//////////////////////////////////////////////////////////////////////////
+	// PC Generation, Branch target resolver, and Flush generation
+	//////////////////////////////////////////////////////////////////////////
+	wire PCGen_EXE_flush;
+	wire PCGen_DEC_flush;
+	wire PCGen_jump;
+	wire [31:0] PCGen_target_pc;
+
+	PCGen pcgen(
+			.clk(clk),
+			.exe_is_branch(EXE_is_branch),
+			.z_flag(EXE_z_flag),
+			.target_pc_in(EXE_pc_out),
+			.jump(PCGen_jump),
+			.target_pc_out(PCGen_target_pc),
+			.EXE_flush(PCGen_EXE_flush),
+			.DEC_flush(PCGen_DEC_flush)
+			);
+
+	//////////////////////////////////////////////////////////////////////////
 	// Inter-stage registers 
 	//////////////////////////////////////////////////////////////////////////
 	always @(posedge clk) begin : FETCH
@@ -192,22 +203,23 @@ module Processor(
 			FETCH_is_branch		<= 1'b1;
 		end
 		else begin
-			FETCH_branch_target <= EXE_pc_out;
-			FETCH_is_branch		<= is_branch;
+			FETCH_branch_target <= PCGen_target_pc;
+			FETCH_is_branch		<= PCGen_jump;
 		end 
 		// #1;
 		// $display("\n\n----------------------------------------\nFETCH i: pc %b", FETCH_curr_pc);
-		$display("FETCH o: next pc %b", FETCH_branch_target);
-		$display("FETCH o: is_branch %b", FETCH_is_branch);
+		// $display("FETCH o: next pc %b", FETCH_branch_target);
+		// $display("FETCH o: is_branch %b", FETCH_is_branch);
 	end
 
-	// reg DEC_stall;
-	// always @(posedge clk) begin 
-	// 	DEC_stall <= !nrst;
-	// end
+	// After reset one instruction is already fetched and ready to decode
+	// we must stall one cycle to prevent double issue of one instruction
+	reg DEC_stall;
+	always @(posedge clk)
+		DEC_stall <= !nrst;
 
 	always @(posedge clk) begin : FETCH_DEC
-		if(!nrst |DEC_flush) begin
+		if(!nrst | PCGen_DEC_flush) begin
 			DEC_instruction	<= 32'b0;
 			DEC_wb_addr 	<= 4'b0;		// From WB
 			DEC_wb_data 	<= 32'b0;		// From WB
@@ -215,20 +227,20 @@ module Processor(
 			DEC_pc_in 		<= 32'b0;
 		end
 		else begin
-			// if(!DEC_stall) begin
+			if(!DEC_stall) begin
 				DEC_instruction	<= FETCH_instruction;
 				DEC_wb_addr 	<= WB_wb_addr_out;		// From WB
 				DEC_wb_data 	<= WB_dataout;			// From WB
 				DEC_wb_wen 		<= WB_wen;				// From WB
 				DEC_pc_in 		<= FETCH_curr_pc;
-			// end
+			end
 		end
 		#1;
-		// $display("-----\nDEC i: instruction %b", DEC_instruction);
+		// $display("DEC i: instruction %b", DEC_instruction);
 		// $display("DEC i: wb_addr %b", DEC_wb_addr);
 		// $display("DEC i: wb_data %b", DEC_wb_data);
 		// $display("DEC i: wb_wen %b", DEC_wb_wen);
-		$display("DEC i: pc_in %b", DEC_pc_in);
+		// $display("DEC i: pc_in %b", DEC_pc_in);
 		// $display("DEC o: rs1_val %b", DEC_rs1_val);
 		// $display("DEC o: rs2_val %b", DEC_rs2_val);
 		// $display("DEC o: instr_type %b", DEC_instr_type);
@@ -244,7 +256,7 @@ module Processor(
 	end
 
 	always @(posedge clk) begin : DEC_EXE
-		if(!nrst | EXE_flush) begin
+		if(!nrst | PCGen_EXE_flush) begin
 			EXE_rs1_val 			<= 32'b0;
 			EXE_rs2_val 			<= 32'b0;
 			EXE_instr_type 			<= 2'b0;
@@ -273,7 +285,7 @@ module Processor(
 			EXE_needs_wb 			<= DEC_needs_wb;
 		end
 		// #1;
-		$display("EXT i: is_branch %b",EXE_is_branch_in );
+		// $display("EXT i: is_branch %b",EXE_is_branch_in );
 		// $display("-----\nEXT: rs1_val %b",EXE_rs1_val );
 		// $display("EXT i: rs2_val %b", EXE_rs2_val);
 		// $display("EXT i: instr_type %b", EXE_instr_type);
@@ -286,7 +298,7 @@ module Processor(
 		// $display("EXT i: pc_in %b", EXE_pc_in);
 		// $display("EXT i: need_wb %b", EXE_needs_wb);
 		// $display("EXT o: exe_out %b", EXE_exe_out);
-		$display("EXT o: pc_out %b", EXE_pc_out);
+		// $display("EXT o: pc_out %b", EXE_pc_out);
 		// $display("EXT o: needs_wb_out %b", EXE_needs_wb_out);
 		// $display("EXT o: is_store_out %b", EXE_is_store_out);
 		// $display("EXT o: store_data %b", EXE_store_data);
@@ -295,7 +307,7 @@ module Processor(
 	end
 
 	always @(posedge clk) begin : EXE_MEM
-		if(!nrst | MEM_flush) begin
+		if(!nrst) begin
 			MEM_addr 		<= 32'b0;
 			MEM_wdata 		<= 32'b0;
 			MEM_needs_wb 	<= 1'b0;

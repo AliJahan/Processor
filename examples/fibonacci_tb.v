@@ -1,15 +1,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Author: Ali Jahan
-// Description: Testbench
+// Description: Testbench for running fibonancci code
 //////////////////////////////////////////////////////////////////////////////////
 `include "PROCESSOR.v"
 
-module testbench;
+module fibonancci_tb;
 
 reg clk;
 reg nrst;
-Processor p(.clk(clk), .nrst(nrst));
 
+Processor #(
+			 .DCACHE_INIT_FILE("../examples/fibonacci_data"), 
+			 .ICACHE_INIT_FILE("../examples/fibonacci_code.init"),
+			 .DCACHE_DUMP_FILE("../simulation/fibonacci_dcache")
+		   )
+		   processor(
+					 .clk(clk), 
+					 .nrst(nrst)
+		   			);
+
+// Initializations
 initial
 begin
 	clk <= 1'b0;
@@ -20,6 +30,7 @@ begin
 	$finish;
 end
 
+// Clock Generation
 always begin 
 	#5 clk <= ~clk;
 end 

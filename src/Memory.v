@@ -11,24 +11,25 @@ module Memory(
 	input wen
 );
 
-parameter INIT_MEM_FILE = "data";
-parameter EXE_MEM_FILE = "cache_dump";
-parameter MEM_SIZE = 1<<32;
+parameter MEM_INIT_FILE = "";
+parameter MEM_DUMP_FILE = "";
+parameter MEM_SIZE 		= 1<<16;
 
-reg [31:0] mem [0:MEM_SIZE>>10-1];
+reg [31:0] mem [0:MEM_SIZE-1];
 
-// //Unsynthesizable /*
+// //Unsynthesizable part /*
 initial begin
-	$display("Memory loaded %s", INIT_MEM_FILE);
-	$readmemb(INIT_MEM_FILE, mem);
+	$readmemb(MEM_INIT_FILE, mem);
 end
 // //Unsynthesizable part */
  
 always @(negedge clk) begin 
 	if(wen) begin
-        $display("Memory: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time);
-        $writememb(EXE_MEM_FILE,mem, 0, 1023);
+        $display("Memory: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time); // Unsynthesizable, just for simulation purposes
+		        																					  // will be removed by synthesis tool
 		mem[waddr] <= wdata;
+		#1 $writememb(MEM_DUMP_FILE,mem, 0, 1023);	// Unsynthesizable, just for simulation purposes
+		        									// will be removed by synthesis tool
 	end
 end
 

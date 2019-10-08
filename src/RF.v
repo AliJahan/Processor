@@ -1,7 +1,7 @@
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Author: Ali Jahan
 // Description: Dual port register file - 2 reads and one write at the same time
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 module RF(
 	input clk,				// Clock
 	input nrst,				// Active-low reset
@@ -16,16 +16,19 @@ module RF(
 
 	// Register file storage
 	reg [31:0] registers [0:15];
-	integer i;
+
+	integer i;	// For reset
 	// Synchornous write to RF
 	always @(negedge clk) begin
 		if (!nrst) begin
+			// Reset RF
 			for(i=0;i<16;i = i+1)
 				registers[i] <= 32'b0;
 		end 
 	    else begin
 	    	if (wen) begin
-		        $display("RF: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time);
+		        $display("RF: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time);	// Unsynthesizable, for simulation purposes
+		        																							// will be removed by synthesis tool
 		        registers[waddr] <= wdata;
 	    	end
 	    end
