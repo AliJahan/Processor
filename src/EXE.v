@@ -11,13 +11,13 @@ module EXE (
 	input [31:0] rs1_val,       // (RS1)
 	input [31:0] rs2_val,       // (RS2)
 	input [1:0] instr_type,     // I-type, R-type, or Branch instruction
-                                // -------------------------------------------------------------------
-                                // | Value 		| ALU funct from | Operand #1 from | Operand #2 from |
-                                // -------------------------------------------------------------------
-                                // | 00 (R-type)  | IMM[3:0]	 | RS1_VAL         | RS2_VAL 		 |
-                                // | 01 (Branch)  | RD   	     | RS1_VAL         | RS2_VAL		 | 
-                                // | 10 (I-type)  | RS2	         | RS1_VAL         | IMM             |
-                                // -------------------------------------------------------------------
+	                            // -------------------------------------------------------------------
+	                            // | Value 		| ALU funct from | Operand #1 from | Operand #2 from |
+	                            // -------------------------------------------------------------------
+	                            // | 00 (R-type)  | IMM[3:0]	 | RS1_VAL         | RS2_VAL 		 |
+	                            // | 01 (Branch)  | RD   	     | RS1_VAL         | RS2_VAL		 | 
+	                            // | 10 (I-type)  | RS2	         | RS1_VAL         | IMM             |
+	                            // -------------------------------------------------------------------
 	input is_computational,     // Shows if the instruction uses COMP_ALU or COND_ALU
 	input is_load,              // Shows if the instruction is load
 	input is_store,             // Shows if the instruction is store
@@ -86,7 +86,7 @@ COMP_ALU comp_alu(
 	.opa(alu_op1),  // First operand
 	.opb(alu_op2),  // Second operand
 	.op(alu_opcode),// Operation
-	.res(alu_out)  // Result
+	.res(alu_out)   // Result
 	);
 
 //Conditional operations ALU
@@ -105,10 +105,10 @@ assign exe_out = is_computational ? alu_out : {31'b0,z_flag};
 assign is_store_out = is_store;
 assign is_load_out  = is_load;
 assign needs_wb_out = needs_wb;
-assign store_data 	= rs2_val;
-assign wb_addr		= rd;
-assign pc_out 		= pc_in+imm;
-assign is_load_out	= is_load;
+assign store_data   = rs2_val;
+assign wb_addr      = rd;
+assign pc_out       = pc_in+imm;
+assign is_load_out  = is_load;
 assign is_branch_out= is_branch_in;
 
 endmodule

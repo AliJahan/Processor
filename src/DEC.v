@@ -16,13 +16,13 @@ module DEC(
 	output [31:0] rs1_val,     // Value raed from RF from address rs1
 	output [31:0] rs2_val,     // Value raed from RF from address rs2
 	output [1:0] instr_type,   // I-type, R-type, or Branch instruction (see table below)
-                               // -------------------------------------------------------------------
-                               // | Value 		| ALU funct from | Operand #1 from | Operand #2 from |
-                               // -------------------------------------------------------------------
-                               // | 00 (R-type)| IMM[3:0]	   	 | RS1_VAL         | RS2_VAL 		 |
-                               // | 01 (Branch)| RD	         | RS1_VAL         | RS2_VAL		 | 
-                               // | 10 (I-type)| RS2	         | RS1_VAL         | IMM 			 |
-                               // -------------------------------------------------------------------
+	                           // -------------------------------------------------------------------
+	                           // | Value 		| ALU funct from | Operand #1 from | Operand #2 from |
+	                           // -------------------------------------------------------------------
+	                           // | 00 (R-type)| IMM[3:0]	   	 | RS1_VAL         | RS2_VAL 		 |
+	                           // | 01 (Branch)| RD	         | RS1_VAL         | RS2_VAL		 | 
+	                           // | 10 (I-type)| RS2	         | RS1_VAL         | IMM 			 |
+	                           // -------------------------------------------------------------------
 	output [3:0] rs2,          // RS2 portion of instrution
 	output [3:0] rd,           // RD portion of instrution
 	output [31:0] se_imm,      // Sign extended immediate

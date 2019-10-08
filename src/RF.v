@@ -28,7 +28,7 @@ module RF(
 	    else begin
 	    	if (wen) begin
 		        $display("RF: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time);  // Unsynthesizable, for simulation purposes
-                                                                                                           // will be removed by synthesis tool
+				                                                                                           // will be removed by synthesis tool
 		        registers[waddr] <= wdata;
 	    	end
 	    end

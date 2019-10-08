@@ -13,8 +13,8 @@ module WB (
 	output wen                 // Write enable signal to be passed to RF
 );
 
-assign dataout 		= is_load ? rdata : pdata;  // If instruction is load, use read data to wb to RF
-assign wen 			= needs_wb;                 // 
-assign wb_addr_out 	= wb_addr_in;               // Register to which the data are going to be written
+assign dataout      = is_load ? rdata : pdata;  // If instruction is load, use read data to wb to RF
+assign wen          = needs_wb;                 // 
+assign wb_addr_out  = wb_addr_in;               // Register to which the data are going to be written
 
 endmodule

@@ -200,11 +200,11 @@ module Processor(
 		if(!nrst) begin
 			// $display("reset");
 			FETCH_branch_target <= 32'b0;
-			FETCH_is_branch		<= 1'b1;
+			FETCH_is_branch     <= 1'b1;
 		end
 		else begin
 			FETCH_branch_target <= PCGen_target_pc;
-			FETCH_is_branch		<= PCGen_jump;
+			FETCH_is_branch     <= PCGen_jump;
 		end 
 		// #1;
 		// $display("\n\n----------------------------------------\nFETCH i: pc %b", FETCH_curr_pc);
@@ -220,19 +220,19 @@ module Processor(
 
 	always @(posedge clk) begin : FETCH_DEC
 		if(!nrst | PCGen_DEC_flush) begin
-			DEC_instruction	<= 32'b0;
-			DEC_wb_addr 	<= 4'b0; 		// From WB
-			DEC_wb_data 	<= 32'b0;		// From WB
-			DEC_wb_wen 		<= 1'b0; 		// From WB
-			DEC_pc_in 		<= 32'b0;
+			DEC_instruction <= 32'b0;
+			DEC_wb_addr     <= 4'b0; 		// From WB
+			DEC_wb_data     <= 32'b0;		// From WB
+			DEC_wb_wen      <= 1'b0; 		// From WB
+			DEC_pc_in       <= 32'b0;
 		end
 		else begin
 			if(!DEC_stall) begin
-				DEC_instruction	<= FETCH_instruction;
-				DEC_wb_addr 	<= WB_wb_addr_out;		// From WB
-				DEC_wb_data 	<= WB_dataout;    		// From WB
-				DEC_wb_wen 		<= WB_wen;        		// From WB
-				DEC_pc_in 		<= FETCH_curr_pc;
+				DEC_instruction <= FETCH_instruction;
+				DEC_wb_addr     <= WB_wb_addr_out;		// From WB
+				DEC_wb_data     <= WB_dataout;    		// From WB
+				DEC_wb_wen      <= WB_wen;        		// From WB
+				DEC_pc_in       <= FETCH_curr_pc;
 			end
 		end
 		#1;
@@ -257,32 +257,32 @@ module Processor(
 
 	always @(posedge clk) begin : DEC_EXE
 		if(!nrst | PCGen_EXE_flush) begin
-			EXE_rs1_val 			<= 32'b0;
-			EXE_rs2_val 			<= 32'b0;
-			EXE_instr_type 			<= 2'b0;
-			EXE_is_computational 	<= 1'b0;
-			EXE_is_load 			<= 1'b0;
-			EXE_is_store 			<= 1'b0;
-			EXE_rs2 				<= 4'b0;
-			EXE_rd 					<= 4'b0;
-			EXE_imm 				<= 32'b0;
-			EXE_pc_in 				<= 32'b0;
-			EXE_needs_wb 			<= 1'b0;
-			EXE_is_branch_in		<= 1'b0;
+			EXE_rs1_val           <= 32'b0;
+			EXE_rs2_val           <= 32'b0;
+			EXE_instr_type        <= 2'b0;
+			EXE_is_computational  <= 1'b0;
+			EXE_is_load           <= 1'b0;
+			EXE_is_store          <= 1'b0;
+			EXE_rs2               <= 4'b0;
+			EXE_rd                <= 4'b0;
+			EXE_imm               <= 32'b0;
+			EXE_pc_in             <= 32'b0;
+			EXE_needs_wb          <= 1'b0;
+			EXE_is_branch_in      <= 1'b0;
 		end
 		else begin
-			EXE_is_branch_in		<= DEC_is_branch;
-			EXE_rs1_val 			<= DEC_rs1_val;
-			EXE_rs2_val 			<= DEC_rs2_val;
-			EXE_instr_type 			<= DEC_instr_type;
-			EXE_is_computational 	<= DEC_is_computational;
-			EXE_is_load 			<= DEC_is_load;
-			EXE_is_store 			<= DEC_is_store;
-			EXE_rs2 				<= DEC_rs2;
-			EXE_rd 					<= DEC_rd;
-			EXE_imm 				<= DEC_se_imm;
-			EXE_pc_in 				<= DEC_pc_out;
-			EXE_needs_wb 			<= DEC_needs_wb;
+			EXE_is_branch_in      <= DEC_is_branch;
+			EXE_rs1_val           <= DEC_rs1_val;
+			EXE_rs2_val           <= DEC_rs2_val;
+			EXE_instr_type        <= DEC_instr_type;
+			EXE_is_computational  <= DEC_is_computational;
+			EXE_is_load           <= DEC_is_load;
+			EXE_is_store          <= DEC_is_store;
+			EXE_rs2               <= DEC_rs2;
+			EXE_rd                <= DEC_rd;
+			EXE_imm               <= DEC_se_imm;
+			EXE_pc_in             <= DEC_pc_out;
+			EXE_needs_wb          <= DEC_needs_wb;
 		end
 		// #1;
 		// $display("EXT i: is_branch %b",EXE_is_branch_in );
@@ -308,20 +308,20 @@ module Processor(
 
 	always @(posedge clk) begin : EXE_MEM
 		if(!nrst) begin
-			MEM_addr 		<= 32'b0;
-			MEM_wdata 		<= 32'b0;
-			MEM_needs_wb 	<= 1'b0;
-			MEM_is_store 	<= 1'b0;
-			MEM_wb_addr_in	<= 4'b0;
-			MEM_is_load_in	<= 1'b0;
+			MEM_addr        <= 32'b0;
+			MEM_wdata       <= 32'b0;
+			MEM_needs_wb    <= 1'b0;
+			MEM_is_store    <= 1'b0;
+			MEM_wb_addr_in  <= 4'b0;
+			MEM_is_load_in  <= 1'b0;
 		end
 		else begin
-			MEM_addr 		<= EXE_exe_out;
-			MEM_wdata 		<= EXE_store_data;
-			MEM_needs_wb 	<= EXE_needs_wb_out;
-			MEM_is_store 	<= EXE_is_store_out;
-			MEM_wb_addr_in	<= EXE_wb_addr;
-			MEM_is_load_in	<= EXE_is_load_out;
+			MEM_addr        <= EXE_exe_out;
+			MEM_wdata       <= EXE_store_data;
+			MEM_needs_wb    <= EXE_needs_wb_out;
+			MEM_is_store    <= EXE_is_store_out;
+			MEM_wb_addr_in  <= EXE_wb_addr;
+			MEM_is_load_in  <= EXE_is_load_out;
 		end
 		// #1;
 		// $display("-----\nMEM i: addr %b", MEM_addr);
@@ -338,18 +338,18 @@ module Processor(
 
 	always @(posedge clk) begin : MEM_WB
 		if(!nrst) begin
-			WB_rdata 		<= 32'b0;
-			WB_pdata 		<= 32'b0;
-			WB_needs_wb		<= 1'b0;
-			WB_wb_addr_in	<= 4'b0;
-			WB_isload		<= 1'b0;
+			WB_rdata      <= 32'b0;
+			WB_pdata      <= 32'b0;
+			WB_needs_wb   <= 1'b0;
+			WB_wb_addr_in <= 4'b0;
+			WB_isload     <= 1'b0;
 		end
 		else begin 
-			WB_rdata 		<= MEM_rdata;
-			WB_pdata 		<= MEM_pdata;
-			WB_needs_wb		<= MEM_wb_wen;
-			WB_wb_addr_in	<= MEM_wb_addr_out;
-			WB_isload		<= MEM_is_load_out;
+			WB_rdata       <= MEM_rdata;
+			WB_pdata       <= MEM_pdata;
+			WB_needs_wb    <= MEM_wb_wen;
+			WB_wb_addr_in  <= MEM_wb_addr_out;
+			WB_isload      <= MEM_is_load_out;
 		end
 		// #1;
 		// $display("-----\nWB i: rdata %b", WB_rdata);
