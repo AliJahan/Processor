@@ -4,6 +4,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module RF(
 	input clk,				// Clock
+	input nrst,
 	input [3:0] raddra, 	// Read address port #1
 	input [3:0] raddrb, 	// Read address port #2
 	input [3:0] waddr, 		// Write address port 
@@ -14,16 +15,25 @@ module RF(
 );
 
 	// Register file storage
-	reg [31:0] registers[15:0];
-
+	reg [31:0] registers [0:15];
+	integer i;
 	// Synchornous write to RF
-	always @(posedge clk) begin
-	    if (wen)
-	        registers[waddr] <= wdata;
+	always @(negedge clk) begin
+		if (!nrst) begin
+			for(i=0;i<16;i = i+1)
+				registers[i] <= 32'b0;
+		end 
+	    else begin
+	    	if (wen) begin
+		        $display("RF: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time);
+		        registers[waddr] <= wdata;
+	    	end
+	    end
+
 	end
 
 	// Synchronous read from RF
-	always @(posedge clk) begin
+	always @(negedge clk) begin
 	    douta <= registers[raddra];
 	    doutb <= registers[raddrb];
 	end

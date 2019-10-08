@@ -29,17 +29,20 @@ module EXE (
 	output z_flag,				// If the checked condition is true
 	output [31:0] exe_out,		// Output of EXE stage, can be branch target or result of calculations
 
-	// To WB for pipeline 		//TODO Is this one necessary? 
+	// To WB for pipeline
+	input is_branch_in,			// If the instruction is branch (in)
+	output is_branch_out, 		// if the instruction is branch (out)
 	input [31:0] pc_in,			// PC in
 	output [31:0] pc_out,		// PC out
 	input needs_wb,  			// Shows if the instruction needs write-back in
 	output needs_wb_out,		// Shows if the instruction needs write-back out
 	output is_store_out,		// Shows if the instruction is store (used in memory LD/SW)
-	output [31:0] store_data	// To be written in Memory in SW instructions
-	output [3:0] wb_addr		// To be written in RF in WB
+	output [31:0] store_data,	// To be written in Memory in SW instructions
+	output [3:0] wb_addr,		// To be written in RF in WB
+	output is_load_out			// To be written in RF in WB
 );
 
-reg [31:0] alu_op1;
+wire [31:0] alu_op1;
 reg [31:0] alu_op2;
 reg [3:0] alu_opcode;
 
@@ -95,7 +98,7 @@ COND_ALU cond_alu(
 	);
 
 //MUX for selecting EXE output
-assign exe_out = is_computational ? alu_out : (pc+imm);
+assign exe_out = is_computational ? alu_out : {31'b0,z_flag};
 
 
 //Pipeline signal passing
@@ -103,5 +106,9 @@ assign is_store_out = is_store;
 assign is_load_out  = is_load;
 assign needs_wb_out = needs_wb;
 assign store_data 	= rs2_val;
-assign	wb_addr		= rd;
+assign wb_addr		= rd;
+assign pc_out 		= pc_in+imm;
+assign is_load_out	= is_load;
+assign is_branch_out= is_branch_in;
+
 endmodule

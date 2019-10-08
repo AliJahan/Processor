@@ -5,7 +5,7 @@
 `include "RF.v"
 module DEC(
 	input clk,
-
+	input nrst,
 	// From FETCH
 	input [31:0] instruction,	// Fetched instruction
 	// From WB
@@ -27,13 +27,14 @@ module DEC(
 	output [3:0] rd,			// RD portion of instrution
 	output [31:0] se_imm,		// Sign extended immediate
 	output is_load,				// Shows if the instruction is load
+	output is_branch,			// Shows if the instruction is branch
 	output is_store,			// Shows if the instruction is store
 	output needs_wb,			// Shows if the instruction needs to write-back any data to RF
 	output is_computational,	// Shows if the instruction uses COMP_ALU or COND_ALU
 
 	// To EXE for pipeline
 	input [31:0] pc_in,			// PC in
-	output [31:0] pc_out,		// PC out
+	output [31:0] pc_out		// PC out
 	);
 
 
@@ -46,15 +47,16 @@ assign rd				= instruction[27:24];			//
 assign rs1				= instruction[23:20];			//
 assign rs2				= instruction[19:16];			//
 assign imm				= instruction[15:0];			// Immediate
-assign se_imm 			= { {16{im[15]}}, im[15:0] };	// Sign extended immediate
+assign se_imm 			= { {16{imm[15]}}, imm[15:0] };	// Sign extended immediate
 assign instr_type 		= opcode[3:2];					// Instruction type
-assign is_computational = opcode[1];					// 
+assign is_computational = ~opcode[1];					// 
 assign is_load 			= opcode[3]  & opcode[0];		//
 assign is_store			= !opcode[3]  & opcode[0];		// 
 assign needs_wb			= ~opcode[2];					// If the instruction has to be written-back to RF
-
+assign is_branch 		= opcode[1] & opcode[2];		// Branch
 RF register_file(
-	.clk(clk), 
+	.clk(clk),
+	.nrst(nrst), 
 	.raddra(rs1), 
 	.raddrb(rs2), 
 	.waddr(wb_addr), 
