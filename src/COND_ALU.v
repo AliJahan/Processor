@@ -5,10 +5,10 @@
 `include "params.v"
 
 module COND_ALU(
-	input signed [31:0] opa, 	// First operand
-	input signed [31:0] opb, 	// Second operand
-	input [3:0] op, 			// Operation
-	output reg z_flag			// Zero flag
+	input signed [31:0] opa, // First operand
+	input signed [31:0] opb, // Second operand
+	input [3:0] op,          // Operation
+	output reg z_flag        // Zero flag
 );
 
 	always @(opa or opb or op) begin

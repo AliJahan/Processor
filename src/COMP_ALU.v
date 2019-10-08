@@ -5,9 +5,9 @@
 `include "params.v"
 
 module COMP_ALU(
-	input signed [31:0] opa, 	 // First operand
-	input signed [31:0] opb, 	 // Second operand
-	input [3:0] op, 			 // Operation
+	input signed [31:0] opa,     // First operand
+	input signed [31:0] opb,     // Second operand
+	input [3:0] op,              // Operation
 	output reg signed [31:0] res // Result
 );
 

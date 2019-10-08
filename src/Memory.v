@@ -26,10 +26,10 @@ end
 always @(negedge clk) begin 
 	if(wen) begin
         $display("Memory: value\t%d\thas been written to address\t%d\tat\t%0t", wdata, waddr, $time); // Unsynthesizable, just for simulation purposes
-		        																					  // will be removed by synthesis tool
+                                                                                                      // will be removed by synthesis tool
 		mem[waddr] <= wdata;
-		#1 $writememb(MEM_DUMP_FILE,mem, 0, 1023);	// Unsynthesizable, just for simulation purposes
-		        									// will be removed by synthesis tool
+		#1 $writememb(MEM_DUMP_FILE,mem, 0, 1023);  // Unsynthesizable, just for simulation purposes
+                                                    // will be removed by synthesis tool
 	end
 end
 

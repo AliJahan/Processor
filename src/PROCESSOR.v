@@ -221,17 +221,17 @@ module Processor(
 	always @(posedge clk) begin : FETCH_DEC
 		if(!nrst | PCGen_DEC_flush) begin
 			DEC_instruction	<= 32'b0;
-			DEC_wb_addr 	<= 4'b0;		// From WB
+			DEC_wb_addr 	<= 4'b0; 		// From WB
 			DEC_wb_data 	<= 32'b0;		// From WB
-			DEC_wb_wen 		<= 1'b0;		// From WB
+			DEC_wb_wen 		<= 1'b0; 		// From WB
 			DEC_pc_in 		<= 32'b0;
 		end
 		else begin
 			if(!DEC_stall) begin
 				DEC_instruction	<= FETCH_instruction;
 				DEC_wb_addr 	<= WB_wb_addr_out;		// From WB
-				DEC_wb_data 	<= WB_dataout;			// From WB
-				DEC_wb_wen 		<= WB_wen;				// From WB
+				DEC_wb_data 	<= WB_dataout;    		// From WB
+				DEC_wb_wen 		<= WB_wen;        		// From WB
 				DEC_pc_in 		<= FETCH_curr_pc;
 			end
 		end
