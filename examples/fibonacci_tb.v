@@ -11,7 +11,7 @@ reg nrst;
 
 Processor #(
 			 .DCACHE_INIT_FILE("../examples/fibonacci_data"), 
-			 .ICACHE_INIT_FILE("../examples/fibonacci_code.init"),
+			 .ICACHE_INIT_FILE("../examples/fibonacci_code.asm"),
 			 .DCACHE_DUMP_FILE("../examples/fibonacci_dcache")
 		   )
 		   processor(
