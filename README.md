@@ -1,7 +1,10 @@
 # Processor
 Processor Implementation in Verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA. 
 
-## Project structure
+## 1. Processor Architecture
+Here goes the detailed architecture of the implemented processor.
+
+## 2. Project structure
  The project constists of four components:
 ### Processor implementation: 
 Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#processor-architecture) saection.
@@ -28,6 +31,3 @@ In order to execute another program on the processor, change the following param
 Located in ```scripts/```, which cantains following scripts:
  * **install_iverilog.sh**: *iverilog* installation script (tested on Ubuntu 16.04) **needs root access to run**
  * **run.sh**: uses the implemeted assembler to convert the ```/examples/fibonacci_code``` assembly code to machine code. Then compiles the testbench located in ```/examples/fibonacci_tb.v``` with *iverilog*, and runs the simulation in verbose mode (-v flag enabled) or non-verbose mode. Verbose mode prints the writes to *Register file* and *data cache* at any time.
-
-## Processor Architecture
-Here goes the detailed architecture of the implemented processor.
