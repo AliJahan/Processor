@@ -9,7 +9,7 @@ Here goes the detailed architecture of the implemented processor.
 ## 2 Project structure
  The project constists of four components:
 ### Processor implementation 
-Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) section. Consisting of:
+Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) section. Contains:
 * *Memory.v* : Memory used for *instruction and data cache*. One port for read and one port for write. (write port is not used in *instruction cache*. On FPGA, BRAMs can be used instead.
 * *RF.v* : Memory used for *Register File*. Supports two reads and one write at the same time.
 * *FETCH.v* : Fetch stage (combinational)
