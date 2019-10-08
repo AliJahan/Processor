@@ -1,7 +1,7 @@
 # Processor
 Processor Implementation in Verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA. 
 
-## 1 Processor Architecture
+## 1 Processor architecture
 Here goes the detailed architecture of the implemented processor.
 
 ## 2 Project structure
