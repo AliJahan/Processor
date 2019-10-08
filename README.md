@@ -6,7 +6,7 @@ Here goes the detailed architecture of the implemented processor.
 
 ## 2 Project structure
  The project constists of four components:
-### Processor implementation: 
+### Processor implementation 
 Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) saection.
 
 ### Assembler
@@ -27,7 +27,10 @@ In order to execute another program on the processor, change the following param
   * **DCACHE_INIT_FILE**: The address of the data needed by your programm to be executed. If your program does not need data to be in the memory, provide an empty file.
   * **DCACHE_DUMP_FILE**: The address of the file to which the *data chache* is going to be dumped after execution
   
-### **Scripts:** 
+### Scripts
 Located in ```scripts/```, which cantains following scripts:
  * **install_iverilog.sh**: *iverilog* installation script (tested on Ubuntu 16.04) **needs root access to run**
  * **run.sh**: uses the implemeted assembler to convert the ```/examples/fibonacci_code``` assembly code to machine code. Then compiles the testbench located in ```/examples/fibonacci_tb.v``` with *iverilog*, and runs the simulation in verbose mode (-v flag enabled) or non-verbose mode. Verbose mode prints the writes to *Register file* and *data cache* at any time.
+
+## 3 How to run simulation
+Examplained in [*Scripts*](#scripts) section.
