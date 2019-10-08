@@ -1,5 +1,5 @@
 # Processor
-A pipelined processor implementation in verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA.
+A 5-stage pipelined processor implementation in verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA.
 
 TODO: the processor does not supoort forwarding, add dummy instruction in your code if there is a dependancy.
 
