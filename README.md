@@ -9,7 +9,7 @@ Here goes the detailed architecture of the implemented processor.
 ## 2 Project structure
  The project constists of four components:
 ### Processor implementation 
-Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) saection.
+Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) section.
 
 ### Assembler
 located in ```Assembler/```, which is an assembler developed in *python3* to convert assembly to machine code. 
