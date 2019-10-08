@@ -9,7 +9,16 @@ Here goes the detailed architecture of the implemented processor.
 ## 2 Project structure
  The project constists of four components:
 ### Processor implementation 
-Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) section.
+Located in ```src/```, which is implemented in *Verilog* and is explained in [*Processor Architecture*](#1-processor-architecture) section. Consisting of:
+* *Memory.v* : Memory used for *instruction and data cache*. One port for read and one port for write. (write port is not used in *instruction cache*. On FPGA, BRAMs can be used instead.
+* *RF.v* : Memory used for *Register File*. Supports two reads and one write at the same time.
+* *FETCH.v* : Fetch stage (combinational)
+* *DEC.v* : Decode stage (combinational)
+* *EXE.v* : Execution stage (combinational)
+* *MEM.v* : Memory stage (contains *data cache*) 
+* *WB.v* : Write-back stage (combinational)
+* *PCGen.v* : Generates next PC based on branch target address (contains one register for EXE stage flush)
+* *Processor.v* : All stages' mouldes are instantiated here. Inter-stage registers are put between each stage here (Contains all inter-stage registers)
 
 ### Assembler
 located in ```Assembler/```, which is an assembler developed in *python3* to convert assembly to machine code. 
