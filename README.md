@@ -5,7 +5,7 @@ TODO: the processor does not supoort forwarding, add dummy instruction in your c
 
 ## 1 Processor architecture
 Here goes the detailed architecture of the implemented processor.
-
+![Processor_architecture](https://github.com/AliJahan/Processor/blob/master/Docs/Architecture.jpg)
 ## 2 Project structure
  The project constists of four components:
 ### Processor implementation 
