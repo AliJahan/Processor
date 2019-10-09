@@ -1,10 +1,18 @@
 # Processor
-A 5-stage pipelined processor implementation in verilog for [this](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf) ISA.
+A 5-stage pipelined processor implementation in verilog for [this ISA](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf).
 
 TODO: the processor does not supoort forwarding, add dummy instruction in your code if there is a dependancy.
 
 ## 1 Processor architecture
 ![Processor_architecture](https://github.com/AliJahan/Processor/blob/master/Docs/Architecture.jpg)
+
+Notes:
+* Data forwarding is not supported in this implemetation YET.
+* In order to complemte each stage in 1 clock cycle, all memories (RF, ICache, and DCache) work with ```negedge``` clock. 
+* ```Cond ALU``` performs conditional operations, ```Comp ALU``` performs arithmetic and bitwise operations. 
+* Taken ```branch``` instructions have two cycle penalty, in order to reduce the penalty cycles, we can use branch predictor or additional hardware to check if a branch is taken in *DECODE* stage, which makes it one cycle penalty (still there is a penalty for branch). We can also use *Branch Predictors* which is not implemented.
+* It is assumed that all the instructions and data are already in *ICache* and *DCache*, respectively.
+
 ## 2 Project structure
  The project constists of four components:
 ### Processor implementation 
