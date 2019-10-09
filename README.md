@@ -1,7 +1,7 @@
 # Processor
 A 5-stage pipelined processor implementation in verilog for [this ISA](https://github.com/AliJahan/Processor/blob/master/Docs/ISA.pdf).
 
-TODO: the processor does not supoort forwarding, add dummy instruction in your code if there is a dependancy.
+TODO: the processor does not support forwarding, add dummy instruction in your code if there is a dependancy.
 
 ## 1 Processor architecture
 ![Processor_architecture](https://github.com/AliJahan/Processor/blob/master/Docs/Architecture.jpg)
